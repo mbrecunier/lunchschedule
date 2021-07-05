@@ -1,12 +1,15 @@
 package com.example.lunchschedule.ui.main
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.lunchschedule.R
+import kotlinx.android.synthetic.main.main_fragment.*
+import java.time.LocalDate
+import java.util.*
 
 class MainFragment : Fragment() {
 
@@ -21,10 +24,15 @@ class MainFragment : Fragment() {
         return inflater.inflate(R.layout.main_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
+        calendar_view.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            // Note: Local Date uses months 1-12 instead of 0-11
+            val dateSelected = LocalDate.of(year, month+1, dayOfMonth)
+            lunch_menu_text.text = viewModel.getMenu(dateSelected)
+        }
+        calendar_view.date = Calendar.getInstance().timeInMillis
+    }
 }
